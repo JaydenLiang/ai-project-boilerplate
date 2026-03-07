@@ -22,6 +22,43 @@ template/
 package.json
 ```
 
+## Git Workflow
+- Every new feature or bug fix must be developed on a dedicated branch — never commit directly to `main`
+- Branch naming:
+  - `feature/<short-description>` — for new functionality
+  - `fix/<short-description>` — for bug fixes
+
+### PR Flow
+```bash
+# 1. Create and switch to branch
+git checkout -b feature/<short-description>
+
+# 2. Implement, commit changes, then push
+git push -u origin feature/<short-description>
+
+# 3. Create PR (auto-generates body from commits)
+gh pr create --title "<title>" --body "$(cat <<'EOF'
+## Summary
+- <bullet points>
+
+## Test plan
+- [ ] <manual test steps>
+EOF
+)"
+
+# 4. Check CI status
+gh pr checks
+
+# 5. Merge and delete branch after approval
+gh pr merge --squash --delete-branch
+```
+
+### Release Flow
+```bash
+# Use the release script (handles versioning, tagging, and GitHub release)
+./scripts/release.sh <patch|minor|major>
+```
+
 ## Key Conventions
 - No external dependencies; use Node.js `https`, `fs`, `path` only
 - Template files are copied verbatim except README.md (`__PROJECT_NAME__` replaced)
