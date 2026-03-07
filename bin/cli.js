@@ -36,6 +36,72 @@ function compareVersions(a, b) {
   return 0;
 }
 
+function getPrefsPath() {
+  const os = require("os");
+  return path.join(os.homedir(), ".config", "ai-project", "prefs.json");
+}
+
+function loadPrefs() {
+  try {
+    return JSON.parse(fs.readFileSync(getPrefsPath(), "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+function savePrefs(prefs) {
+  const prefsPath = getPrefsPath();
+  fs.mkdirSync(path.dirname(prefsPath), { recursive: true });
+  fs.writeFileSync(prefsPath, JSON.stringify(prefs, null, 2));
+}
+
+function checkPackageManager() {
+  const isPnpm = __filename.includes("pnpm");
+  if (isPnpm) return;
+
+  const prefs = loadPrefs();
+  if (prefs.suppressPnpmWarning) return;
+
+  const yellow = (s) => `\x1b[33m${s}\x1b[0m`;
+  const cyan   = (s) => `\x1b[36m${s}\x1b[0m`;
+  const bold   = (s) => `\x1b[1m${s}\x1b[0m`;
+  const dim    = (s) => `\x1b[2m${s}\x1b[0m`;
+
+  const hasPnpm = (() => {
+    try { require("child_process").execSync("pnpm --version", { stdio: "ignore" }); return true; } catch { return false; }
+  })();
+
+  const strip  = (s) => s.replace(/\x1b\[[0-9;]*m/g, "");
+
+  let lines;
+  if (hasPnpm) {
+    const cmd = bold(cyan("pnpm add -g ai-project-boilerplate"));
+    lines = [
+      `   ${bold(yellow("RECOMMENDED:"))} install via pnpm for best compatibility`,
+      `   Run ${cmd}`,
+      `   ${dim("To suppress this warning: ai-project --no-pnpm-warning")}`,
+    ];
+  } else {
+    const installCmd = bold(cyan("npm install -g pnpm"));
+    const migrateCmd = bold(cyan("pnpm add -g ai-project-boilerplate"));
+    lines = [
+      `   ${bold(yellow("RECOMMENDED:"))} install via pnpm for best compatibility`,
+      `   1. Install pnpm: ${installCmd}`,
+      `   2. Then migrate: ${migrateCmd}`,
+      `   ${dim("To suppress this warning: ai-project --no-pnpm-warning")}`,
+    ];
+  }
+
+  const width  = Math.max(...lines.map(l => strip(l).length)) + 2;
+  const border = yellow("─".repeat(width));
+
+  console.error(`\n${yellow("┌")}${border}${yellow("┐")}`);
+  for (const line of lines) {
+    console.error(`${yellow("│")} ${line.padEnd(line.length + width - strip(line).length - 1)}${yellow("│")}`);
+  }
+  console.error(`${yellow("└")}${border}${yellow("┘")}\n`);
+}
+
 async function checkForUpdate() {
   const latest = await fetchLatestVersion();
   if (latest && compareVersions(latest, CURRENT_VERSION) > 0) {
@@ -84,6 +150,18 @@ function copyTemplate(src, dest) {
 
 async function main() {
   const args = process.argv.slice(2);
+
+  // Handle --no-pnpm-warning
+  if (args[0] === '--no-pnpm-warning') {
+    const prefs = loadPrefs();
+    prefs.suppressPnpmWarning = true;
+    savePrefs(prefs);
+    console.log("pnpm warning suppressed. To re-enable, delete ~/.config/ai-project/prefs.json");
+    process.exit(0);
+  }
+
+  // Check package manager preference
+  checkPackageManager();
 
   // Always check for updates first
   await checkForUpdate();
