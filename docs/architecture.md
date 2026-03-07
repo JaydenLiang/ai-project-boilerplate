@@ -1,0 +1,65 @@
+# Architecture
+
+## Stack
+- Node.js (no dependencies, stdlib only)
+- npm for distribution
+
+## Directory Structure
+```
+bin/
+  cli.js              — CLI entry point
+template/
+  AI_INSTRUCTIONS.md
+  CLAUDE.md
+  .ai-stage
+  README.md
+  CHANGELOG.md
+  docs/
+    planning.md
+    architecture.md
+    testing.md
+    deployment.md
+package.json
+```
+
+## Key Conventions
+- No external dependencies; use Node.js `https`, `fs`, `path` only
+- Template files are copied verbatim except README.md (`__PROJECT_NAME__` replaced)
+- Version check is non-blocking: failure to reach npm silently skips the check
+
+## Commands
+```bash
+# Install globally
+npm install -g ai-project-boilerplate
+
+# Run
+ai-project <project-name>
+ai-project --version
+
+# Local dev test
+node bin/cli.js <project-name>
+
+# Publish
+npm publish
+```
+
+## Module Responsibilities
+- `bin/cli.js` — arg parsing, version check, template copy, README substitution
+
+## Data Flow
+```
+cli invoked
+  → fetch npm registry for latest version
+  → compare with package.json version
+  → print upgrade prompt if outdated
+  → copy template/ → <project-name>/
+  → replace __PROJECT_NAME__ in README.md
+  → print summary
+```
+
+## Constraints & Off-Limits
+- Do not add external npm dependencies
+- Do not modify template files without updating both template/ and this project's own docs
+
+## Next Step
+When implementation is stable and ready for tests, update `.ai-stage` to `TESTING` on this branch.
