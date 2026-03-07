@@ -8,6 +8,17 @@
 /
 ```
 
+## Git Workflow
+- Every new feature or bug fix must be developed on a dedicated branch — never commit directly to `main`
+- Branch naming:
+  - `feature/<short-description>` — for new functionality
+  - `fix/<short-description>` — for bug fixes
+- Steps:
+  1. `git checkout -b feature/<short-description>` (or `fix/`)
+  2. Implement and commit changes on the branch
+  3. Open a PR / merge into `main`
+  4. Delete the branch after merge
+
 ## Key Conventions
 <!-- Naming, file organization, patterns to follow -->
 -
