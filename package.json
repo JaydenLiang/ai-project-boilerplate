@@ -5,9 +5,13 @@
   "bin": {
     "ai-project": "bin/cli.js"
   },
+  "scripts": {
+    "preuninstall": "node scripts/preuninstall.js"
+  },
   "files": [
     "bin",
-    "template"
+    "template",
+    "scripts/preuninstall.js"
   ],
   "keywords": [
     "ai",
