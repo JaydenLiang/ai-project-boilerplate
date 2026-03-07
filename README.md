@@ -11,13 +11,13 @@ npm install -g ai-project-boilerplate
 ## Usage
 
 ```bash
-ai-project <project-name>
+ai-project init <project-location>
 ```
 
-Creates a new directory with the following structure:
+Creates a new directory or refines an existing project for AI collaboration with the following structure:
 
 ```
-<project-name>/
+<project-location>/
   AI_INSTRUCTIONS.md   — AI router (source of truth for all AI tools)
   CLAUDE.md            — Claude Code entry (@imports AI_INSTRUCTIONS.md)
   .ai-stage            — current stage, tracked per branch

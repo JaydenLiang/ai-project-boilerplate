@@ -33,11 +33,11 @@ package.json
 npm install -g ai-project-boilerplate
 
 # Run
-ai-project <project-name>
+ai-project init <project-location>
 ai-project --version
 
 # Local dev test
-node bin/cli.js <project-name>
+node bin/cli.js init <project-location>
 
 # Publish
 npm publish
@@ -47,14 +47,32 @@ npm publish
 - `bin/cli.js` — arg parsing, version check, template copy, README substitution
 
 ## Data Flow
+
+### New Project
+```
+ai-project init <project-location>
+  → <project-location> doesn't exist
+    → create directory
+    → copy template/ → <project-location>/
+    → replace __PROJECT_NAME__ in README.md
+    → create .ai-stage with "PLANNING"
+    → print summary
+```
+
+### Existing Project
+```
+ai-project init <project-location>
+  → <project-location> exists
+    → create .ai-project-refining file with migration guidance
+    → print success and next steps
+```
+
+### All Invocations
 ```
 cli invoked
   → fetch npm registry for latest version
   → compare with package.json version
   → print upgrade prompt if outdated
-  → copy template/ → <project-name>/
-  → replace __PROJECT_NAME__ in README.md
-  → print summary
 ```
 
 ## Constraints & Off-Limits

@@ -62,50 +62,84 @@ function copyTemplate(src, dest) {
 
 async function main() {
   const args = process.argv.slice(2);
-  const projectName = args[0];
 
   // Always check for updates first
   await checkForUpdate();
 
-  if (!projectName) {
-    console.log(`Usage: ai-project <project-name>`);
-    console.log(`       ai-project --version`);
-    process.exit(0);
-  }
-
-  if (projectName === "--version" || projectName === "-v") {
+  // Handle --version
+  if (args[0] === '--version' || args[0] === '-v') {
     console.log(CURRENT_VERSION);
     process.exit(0);
   }
 
-  const dest = path.resolve(process.cwd(), projectName);
-
-  if (fs.existsSync(dest)) {
-    console.error(`Error: directory "${projectName}" already exists.`);
-    process.exit(1);
+  // Validate command
+  if (args.length === 0 || args[0] !== 'init') {
+    console.log(`Usage: ai-project init <project-location> [-n <project-name>]`);
+    console.log(`       ai-project --version`);
+    process.exit(0);
   }
 
-  const templateDir = path.join(__dirname, "../template");
-  fs.mkdirSync(dest, { recursive: true });
-  copyTemplate(templateDir, dest);
+  // Parse arguments: init <project-location> [-n <name>]
+  let projectLocation;
+  let customProjectName;
+  
+  // Find -n flag and its value
+  const nIndex = args.indexOf('-n');
+  if (nIndex !== -1) {
+    if (nIndex + 1 < args.length) {
+      customProjectName = args[nIndex + 1];
+    } else {
+      console.error(`Error: -n flag requires a project name argument`);
+      process.exit(1);
+    }
+  }
 
-  // Replace placeholder project name in README
-  const readmePath = path.join(dest, "README.md");
-  const readme = fs.readFileSync(readmePath, "utf8");
-  fs.writeFileSync(readmePath, readme.replace("__PROJECT_NAME__", projectName));
+  // Get project location (first argument after 'init')
+  projectLocation = args[1];
+  if (!projectLocation || projectLocation === '-n') {
+    console.log(`Usage: ai-project init <project-location> [-n <project-name>]`);
+    process.exit(0);
+  }
 
-  console.log(`\nCreated AI-collaborated project: ${projectName}`);
-  console.log(`\nFiles created:`);
-  console.log(`  AI_INSTRUCTIONS.md   — AI router (source of truth)`);
-  console.log(`  CLAUDE.md            — Claude Code entry`);
-  console.log(`  .ai-stage            — current stage (PLANNING)`);
-  console.log(`  CHANGELOG.md`);
-  console.log(`  README.md`);
-  console.log(`  docs/planning.md`);
-  console.log(`  docs/architecture.md`);
-  console.log(`  docs/testing.md`);
-  console.log(`  docs/deployment.md`);
-  console.log(`\nNext: cd ${projectName} && fill in docs/planning.md`);
+  const dest = path.resolve(process.cwd(), projectLocation);
+
+  if (fs.existsSync(dest)) {
+    // Existing project: Create .ai-project-refining from template
+    const refiningTemplateFile = path.join(__dirname, "../.ai-project-refining-template");
+    const refiningFile = path.join(dest, '.ai-project-refining');
+    const template = fs.readFileSync(refiningTemplateFile, "utf8");
+    fs.writeFileSync(refiningFile, template);
+    console.log(`\nDetected existing project: ${projectLocation}`);
+    console.log(`Created .ai-project-refining with migration guidance.`);
+    console.log(`\nNext: Review .ai-project-refining and update your project accordingly.`);
+  } else {
+    // New project: Copy template
+    const templateDir = path.join(__dirname, "../template");
+    fs.mkdirSync(dest, { recursive: true });
+    copyTemplate(templateDir, dest);
+
+    // Replace placeholder in README
+    const readmePath = path.join(dest, "README.md");
+    const readme = fs.readFileSync(readmePath, "utf8");
+    const projectName = customProjectName || path.basename(dest);
+    fs.writeFileSync(readmePath, readme.replace("__PROJECT_NAME__", projectName));
+
+    // Create .ai-stage
+    fs.writeFileSync(path.join(dest, '.ai-stage'), 'PLANNING');
+
+    console.log(`\nCreated AI-collaborated project: ${projectName}`);
+    console.log(`\nFiles created:`);
+    console.log(`  AI_INSTRUCTIONS.md   — AI router (source of truth)`);
+    console.log(`  CLAUDE.md            — Claude Code entry`);
+    console.log(`  .ai-stage            — current stage (PLANNING)`);
+    console.log(`  CHANGELOG.md`);
+    console.log(`  README.md`);
+    console.log(`  docs/planning.md`);
+    console.log(`  docs/architecture.md`);
+    console.log(`  docs/testing.md`);
+    console.log(`  docs/deployment.md`);
+    console.log(`\nNext: cd ${projectName} && fill in docs/planning.md`);
+  }
 }
 
 main();
