@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Release script: bumps version, creates git tag, publishes GitHub release
+# Release script: bumps version via PR, creates git tag, publishes GitHub release
 # Usage: ./scripts/release.sh <patch|minor|major>
 set -euo pipefail
 
@@ -25,17 +25,34 @@ fi
 # Pull latest
 git pull origin main
 
-# Bump version in package.json and get new version
+# Bump version in package.json (no commit yet)
 NEW_VERSION=$(npm version "$BUMP" --no-git-tag-version | tr -d 'v')
 echo "Bumping to v${NEW_VERSION}..."
 
-# Commit version bump
+# Create a release branch, commit version bump, push, open PR, merge, delete branch
+RELEASE_BRANCH="release/v${NEW_VERSION}"
+git checkout -b "$RELEASE_BRANCH"
 git add package.json
 git commit -m "chore: bump version to ${NEW_VERSION}"
+git push -u origin "$RELEASE_BRANCH"
 
-# Create and push tag
+echo "Creating PR for version bump..."
+gh pr create \
+  --title "chore: release v${NEW_VERSION}" \
+  --body "Automated version bump to \`${NEW_VERSION}\` via release script." \
+  --base main \
+  --head "$RELEASE_BRANCH"
+
+echo "Merging release PR..."
+gh pr merge "$RELEASE_BRANCH" --squash --delete-branch
+
+# Switch back to main and pull the merged commit
+git checkout main
+git pull origin main
+
+# Tag the merge commit and push
 git tag "v${NEW_VERSION}"
-git push origin main --tags
+git push origin "v${NEW_VERSION}"
 
 # Create GitHub release with auto-generated notes
 gh release create "v${NEW_VERSION}" \
