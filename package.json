@@ -1,0 +1,23 @@
+{
+  "name": "ai-project-boilerplate",
+  "version": "1.0.0",
+  "description": "CLI to scaffold AI-collaborated projects with stage-based AI instruction files",
+  "bin": {
+    "ai-project": "./bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "template"
+  ],
+  "keywords": ["ai", "boilerplate", "claude", "cursor", "copilot", "scaffold"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JaydenLiang/ai-project-boilerplate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JaydenLiang/ai-project-boilerplate/issues"
+  },
+  "homepage": "https://github.com/JaydenLiang/ai-project-boilerplate#readme",
+  "author": "JaydenLiang"
+}
