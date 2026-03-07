@@ -39,8 +39,30 @@ function compareVersions(a, b) {
 async function checkForUpdate() {
   const latest = await fetchLatestVersion();
   if (latest && compareVersions(latest, CURRENT_VERSION) > 0) {
-    console.log(`\n  Update available: ${CURRENT_VERSION} → ${latest}`);
-    console.log(`  Run to update:    npm install -g ai-project-boilerplate\n`);
+    const yellow = (s) => `\x1b[33m${s}\x1b[0m`;
+    const cyan   = (s) => `\x1b[36m${s}\x1b[0m`;
+    const bold   = (s) => `\x1b[1m${s}\x1b[0m`;
+    const dim    = (s) => `\x1b[2m${s}\x1b[0m`;
+
+    const tag     = bold(yellow("UPDATE AVAILABLE"));
+    const from    = dim(CURRENT_VERSION);
+    const arrow   = "→";
+    const to      = bold(cyan(latest));
+    const cmd     = bold(cyan("npm install -g ai-project-boilerplate"));
+    const url     = cyan(`https://github.com/${REPO}/releases/tag/v${latest}`);
+    const line1   = `   ${tag}   ${from} ${arrow} ${to}`;
+    const line2   = `   Run ${cmd} to update`;
+    const line3   = `   See what's changed: ${url}`;
+
+    const strip   = (s) => s.replace(/\x1b\[[0-9;]*m/g, "");
+    const width   = Math.max(strip(line1).length, strip(line2).length, strip(line3).length) + 2;
+    const border  = yellow("─".repeat(width));
+
+    console.error(`\n${yellow("┌")}${border}${yellow("┐")}`);
+    console.error(`${yellow("│")} ${line1.padEnd(line1.length + width - strip(line1).length - 1)}${yellow("│")}`);
+    console.error(`${yellow("│")} ${line2.padEnd(line2.length + width - strip(line2).length - 1)}${yellow("│")}`);
+    console.error(`${yellow("│")} ${line3.padEnd(line3.length + width - strip(line3).length - 1)}${yellow("│")}`);
+    console.error(`${yellow("└")}${border}${yellow("┘")}\n`);
     return true;
   }
   return false;
