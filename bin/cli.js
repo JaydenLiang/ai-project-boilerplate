@@ -74,14 +74,30 @@ async function main() {
 
   // Validate command
   if (args.length === 0 || args[0] !== 'init') {
-    console.log(`Usage: ai-project init <project-location>`);
+    console.log(`Usage: ai-project init <project-location> [-n <project-name>]`);
     console.log(`       ai-project --version`);
     process.exit(0);
   }
 
-  const projectLocation = args[1];
-  if (!projectLocation) {
-    console.log(`Usage: ai-project init <project-location>`);
+  // Parse arguments: init <project-location> [-n <name>]
+  let projectLocation;
+  let customProjectName;
+  
+  // Find -n flag and its value
+  const nIndex = args.indexOf('-n');
+  if (nIndex !== -1) {
+    if (nIndex + 1 < args.length) {
+      customProjectName = args[nIndex + 1];
+    } else {
+      console.error(`Error: -n flag requires a project name argument`);
+      process.exit(1);
+    }
+  }
+
+  // Get project location (first argument after 'init')
+  projectLocation = args[1];
+  if (!projectLocation || projectLocation === '-n') {
+    console.log(`Usage: ai-project init <project-location> [-n <project-name>]`);
     process.exit(0);
   }
 
@@ -105,7 +121,7 @@ async function main() {
     // Replace placeholder in README
     const readmePath = path.join(dest, "README.md");
     const readme = fs.readFileSync(readmePath, "utf8");
-    const projectName = path.basename(dest);
+    const projectName = customProjectName || path.basename(dest);
     fs.writeFileSync(readmePath, readme.replace("__PROJECT_NAME__", projectName));
 
     // Create .ai-stage
