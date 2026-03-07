@@ -1,0 +1,26 @@
+# Migration Guidance for Existing AI Project
+
+Your existing project has been detected.
+
+To integrate with the AI Project Boilerplate and refine your project for AI collaboration:
+
+1. **Review AI_INSTRUCTIONS.md**: Copy or adapt the AI_INSTRUCTIONS.md from the boilerplate to your project root. This file serves as the AI router and source of truth for project guidelines, ensuring consistent AI interactions.
+
+2. **Add CLAUDE.md**: Include CLAUDE.md for Claude Code entry points, defining how AI tools interact with your codebase.
+
+3. **Set Up docs/ Folder**: Ensure a `docs/` folder exists with at least:
+   - planning.md (project goals and roadmap)
+   - architecture.md (system design)
+   - testing.md (testing strategies)
+   - deployment.md (deployment processes)
+   Copy or adapt these from the boilerplate if needed.
+
+4. **Update CHANGELOG.md**: Maintain a changelog for version history and AI-driven changes.
+
+5. **Enhance README.md**: Update your README.md to reference AI_INSTRUCTIONS.md and include project setup for AI collaboration.
+
+6. **Add .ai-stage File (Optional)**: Create a `.ai-stage` file in the project root with initial content `PLANNING` to track the current development stage (e.g., PLANNING, DEVELOPMENT, TESTING, DEPLOYMENT).
+
+7. **Next Steps**: Fill in or update docs/planning.md. Consider integrating AI tools for code reviews and refinements.
+
+For more details, refer to the AI Project Boilerplate documentation.
