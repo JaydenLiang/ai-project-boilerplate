@@ -79,7 +79,7 @@ function checkPackageManager() {
     lines = [
       `   ${bold(yellow("RECOMMENDED:"))} install via pnpm for best compatibility`,
       `   Run ${cmd}`,
-      `   ${dim("To suppress this warning: ai-project --no-pnpm-warning")}`,
+      `   To suppress this warning: ${bold(cyan("ai-project --no-pnpm-warning"))}`,
     ];
   } else {
     const installCmd = bold(cyan("npm install -g pnpm"));
@@ -88,7 +88,7 @@ function checkPackageManager() {
       `   ${bold(yellow("RECOMMENDED:"))} install via pnpm for best compatibility`,
       `   1. Install pnpm: ${installCmd}`,
       `   2. Then migrate: ${migrateCmd}`,
-      `   ${dim("To suppress this warning: ai-project --no-pnpm-warning")}`,
+      `   To suppress this warning: ${bold(cyan("ai-project --no-pnpm-warning"))}`,
     ];
   }
 
