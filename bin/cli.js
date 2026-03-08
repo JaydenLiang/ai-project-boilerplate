@@ -249,9 +249,26 @@ async function main() {
     }
   }
 
-  console.log(`\nNext: Ask your AI to read:`);
-  console.log(`  ai-project-integration-plan/.ai-project-integration-instructions`);
-  console.log(`\nYour AI will decide how to integrate the boilerplate into your project.`);
+  const yellow = (s) => `\x1b[33m${s}\x1b[0m`;
+  const cyan   = (s) => `\x1b[36m${s}\x1b[0m`;
+  const bold   = (s) => `\x1b[1m${s}\x1b[0m`;
+  const strip  = (s) => s.replace(/\x1b\[[0-9;]*m/g, "");
+
+  const nextLines = [
+    `   ${bold(yellow("NEXT STEP"))}`,
+    `   Ask your AI to read:`,
+    ``,
+    `   ${bold(cyan("ai-project-integration-plan/.ai-project-integration-instructions"))}`,
+  ];
+
+  const nextWidth  = Math.max(...nextLines.map(l => strip(l).length)) + 2;
+  const nextBorder = yellow("─".repeat(nextWidth));
+
+  console.log(`\n${yellow("┌")}${nextBorder}${yellow("┐")}`);
+  for (const line of nextLines) {
+    console.log(`${yellow("│")} ${line.padEnd(line.length + nextWidth - strip(line).length - 1)}${yellow("│")}`);
+  }
+  console.log(`${yellow("└")}${nextBorder}${yellow("┘")}\n`);
 }
 
 main();
