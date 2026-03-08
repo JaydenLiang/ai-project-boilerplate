@@ -12,7 +12,7 @@
     "bin",
     "template",
     "scripts/preuninstall.js",
-    ".ai-project-refining-template"
+    ".ai-project-integration-instructions-template"
   ],
   "keywords": [
     "ai",

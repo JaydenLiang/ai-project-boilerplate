@@ -161,6 +161,12 @@ function copyTemplate(src, dest) {
   }
 }
 
+function prompt(question) {
+  const readline = require('readline');
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise(resolve => rl.question(question, answer => { rl.close(); resolve(answer); }));
+}
+
 async function main() {
   const args = process.argv.slice(2);
 
@@ -187,72 +193,65 @@ async function main() {
 
   // Validate command
   if (args.length === 0 || args[0] !== 'init') {
-    console.log(`Usage: ai-project init <project-location> [-n <project-name>]`);
+    console.log(`Usage: ai-project init <project-location>`);
     console.log(`       ai-project --version`);
     process.exit(0);
   }
 
-  // Parse arguments: init <project-location> [-n <name>]
-  let projectLocation;
-  let customProjectName;
-  
-  // Find -n flag and its value
-  const nIndex = args.indexOf('-n');
-  if (nIndex !== -1) {
-    if (nIndex + 1 < args.length) {
-      customProjectName = args[nIndex + 1];
-    } else {
-      console.error(`Error: -n flag requires a project name argument`);
-      process.exit(1);
-    }
-  }
-
   // Get project location (first argument after 'init')
-  projectLocation = args[1];
-  if (!projectLocation || projectLocation === '-n') {
-    console.log(`Usage: ai-project init <project-location> [-n <project-name>]`);
+  const projectLocation = args[1];
+  if (!projectLocation) {
+    console.log(`Usage: ai-project init <project-location>`);
     process.exit(0);
   }
 
   const dest = path.resolve(process.cwd(), projectLocation);
+  const integrationDir = path.join(dest, 'ai-project-integration-plan');
 
-  if (fs.existsSync(dest)) {
-    // Existing project: Create .ai-project-refining from template
-    const refiningTemplateFile = path.join(__dirname, "../.ai-project-refining-template");
-    const refiningFile = path.join(dest, '.ai-project-refining');
-    const template = fs.readFileSync(refiningTemplateFile, "utf8");
-    fs.writeFileSync(refiningFile, template);
-    console.log(`\nDetected existing project: ${projectLocation}`);
-    console.log(`Created .ai-project-refining with migration guidance.`);
-    console.log(`\nNext: Review .ai-project-refining and update your project accordingly.`);
-  } else {
-    // New project: Copy template
-    const templateDir = path.join(__dirname, "../template");
-    fs.mkdirSync(dest, { recursive: true });
-    copyTemplate(templateDir, dest);
+  // Create dest if needed
+  fs.mkdirSync(dest, { recursive: true });
 
-    // Replace placeholder in README
-    const readmePath = path.join(dest, "README.md");
-    const readme = fs.readFileSync(readmePath, "utf8");
-    const projectName = customProjectName || path.basename(dest);
-    fs.writeFileSync(readmePath, readme.replace("__PROJECT_NAME__", projectName));
-
-    // Create .ai-stage
-    fs.writeFileSync(path.join(dest, '.ai-stage'), 'PLANNING');
-
-    console.log(`\nCreated AI-collaborated project: ${projectName}`);
-    console.log(`\nFiles created:`);
-    console.log(`  AI_INSTRUCTIONS.md   — AI router (source of truth)`);
-    console.log(`  CLAUDE.md            — Claude Code entry`);
-    console.log(`  .ai-stage            — current stage (PLANNING)`);
-    console.log(`  CHANGELOG.md`);
-    console.log(`  README.md`);
-    console.log(`  docs/planning.md`);
-    console.log(`  docs/architecture.md`);
-    console.log(`  docs/testing.md`);
-    console.log(`  docs/deployment.md`);
-    console.log(`\nNext: cd ${projectName} && fill in docs/planning.md`);
+  // Handle existing ai-project-integration-plan/
+  if (fs.existsSync(integrationDir)) {
+    const answer = await prompt('ai-project-integration-plan/ already exists. Overwrite? (y/N): ');
+    if (answer.trim().toLowerCase() !== 'y') {
+      console.log('Aborted.');
+      process.exit(0);
+    }
+    fs.rmSync(integrationDir, { recursive: true, force: true });
   }
+
+  // Create integration plan dir and copy template into it
+  fs.mkdirSync(integrationDir, { recursive: true });
+  const templateDir = path.join(__dirname, '../template');
+  copyTemplate(templateDir, integrationDir);
+
+  // Copy .ai-project-integration-instructions-template as .ai-project-integration-instructions
+  const instructionsTemplatePath = path.join(__dirname, '../.ai-project-integration-instructions-template');
+  const instructionsDestPath = path.join(integrationDir, '.ai-project-integration-instructions');
+  fs.copyFileSync(instructionsTemplatePath, instructionsDestPath);
+
+  console.log(`\nCreated: ai-project-integration-plan/`);
+
+  // Offer to add to .gitignore
+  const gitignorePath = path.join(dest, '.gitignore');
+  const gitignoreEntry = 'ai-project-integration-plan/';
+  const alreadyIgnored = fs.existsSync(gitignorePath) &&
+    fs.readFileSync(gitignorePath, 'utf8').includes(gitignoreEntry);
+
+  if (!alreadyIgnored) {
+    const gitAnswer = await prompt(`Add ${gitignoreEntry} to .gitignore? (Y/n): `);
+    if (gitAnswer.trim().toLowerCase() !== 'n') {
+      fs.appendFileSync(gitignorePath, `\n${gitignoreEntry}\n`);
+      console.log(`.gitignore updated.`);
+    } else {
+      console.log(`Reminder: add ${gitignoreEntry} to .gitignore manually.`);
+    }
+  }
+
+  console.log(`\nNext: Ask your AI to read:`);
+  console.log(`  ai-project-integration-plan/.ai-project-integration-instructions`);
+  console.log(`\nYour AI will decide how to integrate the boilerplate into your project.`);
 }
 
 main();
