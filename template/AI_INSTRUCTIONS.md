@@ -46,7 +46,9 @@ If multiple workflows apply to the current action, read all of them.
 2. Do not read other stage files unless explicitly asked.
 3. After completing work, append a summary to `CHANGELOG.md`.
 4. When the stage changes, update `.ai-stage` on the current branch.
-5. Before any code management action: check `.ai-workflow`, read the relevant `docs/workflows/*.md`, and follow it exactly.
+5. Before any code management action:
+   a. Update `CHANGELOG.md` first — include it in the same commit.
+   b. Check `.ai-workflow`, read the relevant `docs/workflows/*.md`, and follow it exactly.
 
 ## First-Time Setup (AI tools other than Claude Code)
 If your tool uses a dedicated instructions file (e.g. `.cursorrules` for Cursor,
