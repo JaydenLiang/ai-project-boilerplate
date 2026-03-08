@@ -14,35 +14,16 @@
   - `feature/<short-description>` — for new functionality
   - `fix/<short-description>` — for bug fixes
 ### PR Flow
-```bash
-# 1. Create and switch to branch
-git checkout -b feature/<short-description>
-
-# 2. Implement, commit changes, then push
-git push -u origin feature/<short-description>
-
-# 3. Create PR
-gh pr create --title "<title>" --body "$(cat <<'EOF'
-## Summary
-- <bullet points>
-
-## Test plan
-- [ ] <manual test steps>
-EOF
-)"
-
-# 4. Check CI status
-gh pr checks
-
-# 5. Merge and delete branch after approval
-gh pr merge --squash --delete-branch
-```
+1. Create a feature or fix branch and push to remote
+2. Open a pull request targeting `main` (e.g. via `gh pr create` or your Git host's UI)
+3. Check CI status (e.g. `gh pr checks`)
+4. Merge and delete the branch after approval (e.g. `gh pr merge --squash --delete-branch`)
 
 ### Release Flow
-```bash
-# Bump version, tag, and create GitHub release
-./scripts/release.sh <patch|minor|major>
-```
+1. Bump the version (follow your project's versioning convention)
+2. Commit the version change and tag the commit (e.g. `vX.Y.Z`)
+3. Push the tag to remote
+4. Publish / deploy (e.g. create a release on your Git host, publish to a registry, deploy to an environment)
 
 ## Key Conventions
 <!-- Naming, file organization, patterns to follow -->
