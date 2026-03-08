@@ -15,7 +15,7 @@ Read `.ai-stage` for the current stage value.
 - `CHANGELOG.md` — append completed work after each session
 
 ## Workflow
-`.ai-workflow` lists the active workflows for this project, one per line. Each entry maps to `workflows/<name>.md`.
+`.ai-workflow` lists the active workflows for this project, one per line. Each entry maps to `docs/workflows/<name>.md`.
 
 Example `.ai-workflow`:
 ```
@@ -46,7 +46,7 @@ If multiple workflows apply to the current action, read all of them.
 2. Do not read other stage files unless explicitly asked.
 3. After completing work, append a summary to `CHANGELOG.md`.
 4. When the stage changes, update `.ai-stage` on the current branch.
-5. Before any code management action: check `.ai-workflow`, read the relevant `workflows/*.md`, and follow it exactly.
+5. Before any code management action: check `.ai-workflow`, read the relevant `docs/workflows/*.md`, and follow it exactly.
 
 ## First-Time Setup (AI tools other than Claude Code)
 If your tool uses a dedicated instructions file (e.g. `.cursorrules` for Cursor,
