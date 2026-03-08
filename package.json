@@ -11,7 +11,8 @@
   "files": [
     "bin",
     "template",
-    "scripts/preuninstall.js"
+    "scripts/preuninstall.js",
+    ".ai-project-refining-template"
   ],
   "keywords": [
     "ai",
