@@ -15,24 +15,38 @@ Read `.ai-stage` for the current stage value.
 - `CHANGELOG.md` — append completed work after each session
 
 ## Workflow
-Read `.ai-workflow` for the version control workflow in use (e.g. `github`, `gitlab`, `bitbucket`).
+`.ai-workflow` lists the active workflows for this project, one per line. Each entry maps to `workflows/<name>.md`.
 
-**If `.ai-workflow` does not exist or contains `unknown`:**
-- Ask the user: *"Which version control workflow does this project use? (e.g. github, gitlab, bitbucket)"*
-- Write the answer (lowercase, one word) to `.ai-workflow`
-- Do not proceed with any commit/PR/release action until this is resolved
+Example `.ai-workflow`:
+```
+github
+npm-publish
+```
 
-**When to read the workflow file:**
-- ONLY when you are about to commit, push, open a PR, or create a release
-- Do NOT read it on every session — only when a code management action is needed
-- The workflow file to read is: `workflows/<value-in-.ai-workflow>.md`
+**If `.ai-workflow` is missing or every line is `unknown`:**
+- Ask the user: *"Which workflows does this project use? (e.g. github, npm-publish, gitlab)"*
+- Write the answers to `.ai-workflow`, one per line
+- Do not proceed with any code management action until this is resolved
+
+**When to read workflow files:**
+- Do NOT read workflow files on session start or during normal coding
+- ONLY read when you are about to perform a code management action
+- Read only the workflow(s) relevant to the current action:
+
+| Action | Read this workflow |
+|--------|-------------------|
+| commit / push / PR / branch | the VCS workflow (e.g. `github`, `gitlab`) |
+| publish to a package registry | the publish workflow (e.g. `npm-publish`) |
+| release (tag + publish) | both VCS and publish workflows |
+
+If multiple workflows apply to the current action, read all of them.
 
 ## Instructions
 1. Read ONLY the file for the current stage above.
 2. Do not read other stage files unless explicitly asked.
 3. After completing work, append a summary to `CHANGELOG.md`.
 4. When the stage changes, update `.ai-stage` on the current branch.
-5. Before any commit/PR/release: check `.ai-workflow`, read the corresponding `workflows/*.md`, and follow it exactly.
+5. Before any code management action: check `.ai-workflow`, read the relevant `workflows/*.md`, and follow it exactly.
 
 ## First-Time Setup (AI tools other than Claude Code)
 If your tool uses a dedicated instructions file (e.g. `.cursorrules` for Cursor,
