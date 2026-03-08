@@ -1,0 +1,51 @@
+# AI Project Integration Instructions
+
+The `ai-project-integration-plan/` directory has been created in your project root.
+It contains the full AI Project Boilerplate template and these integration instructions.
+
+**Project root** = the directory that contains `ai-project-integration-plan/`.
+
+---
+
+## How to Integrate
+
+### Step 1 — Assess the project
+
+Check whether the project root is empty or already has existing files:
+
+- **Empty or missing key files** (no `AI_INSTRUCTIONS.md`, `docs/`, `CHANGELOG.md`, etc.):
+  → Copy all contents from `ai-project-integration-plan/` directly to the project root. No merge needed.
+
+- **Existing project with files already present**:
+  → Review each file in `ai-project-integration-plan/` and merge or adapt as appropriate.
+  Do not overwrite existing files blindly — check for conflicts first.
+
+### Step 2 — Set the project name
+
+In `ai-project-integration-plan/README.md`, replace `__PROJECT_NAME__` with the actual project name.
+Infer it from the project root directory name, or ask the user if unclear.
+
+### Step 3 — Review and adapt each file
+
+| File | Action |
+|------|--------|
+| `AI_INSTRUCTIONS.md` | Copy to root; adapt stage map if needed |
+| `CLAUDE.md` | Copy to root |
+| `.ai-stage` | Copy to root (default: `PLANNING`) |
+| `.ai-workflow` | Copy to root; ask user which workflows apply and update accordingly |
+| `CHANGELOG.md` | Copy to root if missing; otherwise append |
+| `README.md` | Copy to root if missing; otherwise merge |
+| `docs/` | Copy missing files; do not overwrite existing ones |
+| `docs/workflows/` | Copy to root; these are reference guides, safe to copy |
+
+### Step 4 — Clean up
+
+After integration is complete, **delete the entire `ai-project-integration-plan/` directory**.
+It is a temporary scaffold and should not remain in the project.
+
+---
+
+## Notes
+
+- `.ai-workflow` defaults to `unknown` — update it with the actual workflow(s) in use (e.g. `github`, `npm-publish`)
+- If `.gitignore` does not already exclude `ai-project-integration-plan/`, add it
