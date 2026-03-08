@@ -110,24 +110,37 @@ async function checkForUpdate() {
     const bold   = (s) => `\x1b[1m${s}\x1b[0m`;
     const dim    = (s) => `\x1b[2m${s}\x1b[0m`;
 
-    const tag     = bold(yellow("UPDATE AVAILABLE"));
-    const from    = dim(CURRENT_VERSION);
-    const arrow   = "→";
-    const to      = bold(cyan(latest));
-    const cmd     = bold(cyan("npm install -g ai-project-boilerplate"));
-    const url     = cyan(`https://github.com/${REPO}/releases/tag/v${latest}`);
-    const line1   = `   ${tag}   ${from} ${arrow} ${to}`;
-    const line2   = `   Run ${cmd} to update`;
-    const line3   = `   See what's changed: ${url}`;
+    const strip  = (s) => s.replace(/\x1b\[[0-9;]*m/g, "");
 
-    const strip   = (s) => s.replace(/\x1b\[[0-9;]*m/g, "");
-    const width   = Math.max(strip(line1).length, strip(line2).length, strip(line3).length) + 2;
-    const border  = yellow("─".repeat(width));
+    const isPnpm = __filename.includes("pnpm");
+    const prefs  = loadPrefs();
+
+    const updateCmd = (isPnpm || !prefs.suppressPnpmWarning)
+      ? bold(cyan("pnpm add -g ai-project-boilerplate"))
+      : bold(cyan("npm install -g ai-project-boilerplate"));
+
+    const tag  = bold(yellow("UPDATE AVAILABLE"));
+    const from = dim(CURRENT_VERSION);
+    const to   = bold(cyan(latest));
+    const url  = cyan(`https://github.com/${REPO}/releases/tag/v${latest}`);
+
+    const lines = [
+      `   ${tag}   ${from} → ${to}`,
+      `   Run ${updateCmd} to update`,
+      `   See what's changed: ${url}`,
+    ];
+
+    if (!isPnpm && !prefs.suppressPnpmWarning) {
+      lines.push(`   To suppress pnpm suggestion: ${bold(cyan("ai-project --no-pnpm-warning"))}`);
+    }
+
+    const width  = Math.max(...lines.map(l => strip(l).length)) + 2;
+    const border = yellow("─".repeat(width));
 
     console.error(`\n${yellow("┌")}${border}${yellow("┐")}`);
-    console.error(`${yellow("│")} ${line1.padEnd(line1.length + width - strip(line1).length - 1)}${yellow("│")}`);
-    console.error(`${yellow("│")} ${line2.padEnd(line2.length + width - strip(line2).length - 1)}${yellow("│")}`);
-    console.error(`${yellow("│")} ${line3.padEnd(line3.length + width - strip(line3).length - 1)}${yellow("│")}`);
+    for (const line of lines) {
+      console.error(`${yellow("│")} ${line.padEnd(line.length + width - strip(line).length - 1)}${yellow("│")}`);
+    }
     console.error(`${yellow("└")}${border}${yellow("┘")}\n`);
     return true;
   }
