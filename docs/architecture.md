@@ -23,12 +23,10 @@ package.json
 ```
 
 ## Git Workflow
-- **All changes to `main` must go through a PR — no exceptions, including version bumps and chores**
-- Every change must be developed on a dedicated branch — never commit directly to `main`
+- Every new feature or bug fix must be developed on a dedicated branch — never commit directly to `main`
 - Branch naming:
   - `feature/<short-description>` — for new functionality
   - `fix/<short-description>` — for bug fixes
-  - `chore/<short-description>` — for version bumps, dependency updates, config changes
 
 ### PR Flow
 ```bash
