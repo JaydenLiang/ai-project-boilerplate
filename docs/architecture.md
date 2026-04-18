@@ -51,8 +51,11 @@ EOF
 # 4. Check CI status
 gh pr checks
 
-# 5. Merge and delete branch after approval
-gh pr merge --squash --delete-branch
+# 5. Merge with no-ff locally (preserves full commit history)
+git checkout main
+git pull origin main
+git merge --no-ff <branch> -m "Merge branch '<branch>'"
+git push origin main
 ```
 
 ### Release Flow
