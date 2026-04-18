@@ -13,6 +13,7 @@ Read `.ai-stage` for the current stage value.
 
 ## Always-Available
 - `CHANGELOG.md` — append completed work after each session
+- `docs/coding-guide.md` — coding conventions and sub-agent workflow; always follow these
 
 ## Workflow
 `.ai-workflow` lists the active workflows for this project, one per line. Each entry maps to `docs/workflows/<name>.md`.

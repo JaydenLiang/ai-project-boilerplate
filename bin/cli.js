@@ -249,6 +249,34 @@ async function main() {
     }
   }
 
+  // Offer to install Claude sub-agents
+  const agentNames = ['code-writer.md', 'code-reviewer.md', 'lessons-collector.md'];
+  const agentsDest = path.join(dest, '.claude', 'agents');
+  const existingAgents = agentNames.filter(a => fs.existsSync(path.join(agentsDest, a)));
+
+  if (existingAgents.length === 0) {
+    const agentsAnswer = await prompt(`Install Claude Code sub-agents (code-writer, code-reviewer, lessons-collector)? (Y/n): `);
+    if (agentsAnswer.trim().toLowerCase() !== 'n') {
+      const agentsSrc = path.join(__dirname, '../template/agents');
+      fs.mkdirSync(agentsDest, { recursive: true });
+      copyTemplate(agentsSrc, agentsDest);
+      console.log(`Installed sub-agents to .claude/agents/`);
+    }
+  } else {
+    const yellow = (s) => `\x1b[33m${s}\x1b[0m`;
+    const bold = (s) => `\x1b[1m${s}\x1b[0m`;
+    console.log(`\n${bold(yellow(`Warning: Existing sub-agents detected: ${existingAgents.join(', ')}`))}`)
+    console.log(yellow(`Copying will NOT overwrite them — files will be placed in .claude/tmp/agents/ for manual comparison.`));
+    const agentsAnswer = await prompt(`Copy sub-agents to .claude/tmp/agents/? (y/N): `);
+    if (agentsAnswer.trim().toLowerCase() === 'y') {
+      const agentsSrc = path.join(__dirname, '../template/agents');
+      const agentsTmp = path.join(dest, '.claude', 'tmp', 'agents');
+      fs.mkdirSync(agentsTmp, { recursive: true });
+      copyTemplate(agentsSrc, agentsTmp);
+      console.log(`Copied sub-agents to .claude/tmp/agents/ — compare and merge manually.`);
+    }
+  }
+
   const yellow = (s) => `\x1b[33m${s}\x1b[0m`;
   const cyan   = (s) => `\x1b[36m${s}\x1b[0m`;
   const bold   = (s) => `\x1b[1m${s}\x1b[0m`;
