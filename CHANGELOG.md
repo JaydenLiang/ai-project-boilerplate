@@ -3,16 +3,9 @@
 <!-- AI: append a new entry after each work session. Do not edit previous entries. -->
 <!-- Format: ## YYYY-MM-DD [Stage] — brief summary, then bullet points -->
 
-## 2026-04-18 [CODING] — Bump version to 1.6.0
-- Released v1.6.0 with Claude sub-agents support
-
-## 2026-04-18 [CODING] — Add sub-agents, coding guide, and dev-lessons workflow
-- Added three Claude sub-agents: code-writer, code-reviewer, lessons-collector to template/agents/
-- Added docs/coding-guide.md and docs/sub-agents.md
-- Updated docs/workflows/github.md to use --no-ff merge strategy
-- Updated AI_INSTRUCTIONS.md to reference docs/coding-guide.md as always-available
-- Updated .gitignore for dev-lessons local files
-- CLI: prompt user during init whether to install sub-agents into .claude/agents/
+## 2026-04-18 [CODING] — Sync template github workflow to no-ff merge
+- Updated `template/docs/workflows/github.md` PR Flow step 5 to use `git merge --no-ff` instead of `gh pr merge --squash`
+- Added `agents/` directory to project root (code-reviewer, code-writer, lessons-collector)
 
 ## 2026-03-07 [CODING] — CLI refactor with init command and custom naming
 - Refactored CLI command structure from `ai-project <project-name>` to `ai-project init <project-location>`
