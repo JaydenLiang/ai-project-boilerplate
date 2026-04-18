@@ -3,6 +3,9 @@
 <!-- AI: append a new entry after each work session. Do not edit previous entries. -->
 <!-- Format: ## YYYY-MM-DD [Stage] — brief summary, then bullet points -->
 
+## 2026-04-18 [CODING] — Bump version to 1.6.0
+- Released v1.6.0 with Claude sub-agents support
+
 ## 2026-04-18 [CODING] — Add sub-agents, coding guide, and dev-lessons workflow
 - Added three Claude sub-agents: code-writer, code-reviewer, lessons-collector to template/agents/
 - Added docs/coding-guide.md and docs/sub-agents.md

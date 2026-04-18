@@ -1,6 +1,6 @@
 {
   "name": "ai-project-boilerplate",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "CLI to scaffold AI-collaborated projects with stage-based AI instruction files",
   "bin": {
     "ai-project": "bin/cli.js"
