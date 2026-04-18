@@ -3,13 +3,13 @@
 <!-- AI: append a new entry after each work session. Do not edit previous entries. -->
 <!-- Format: ## YYYY-MM-DD [Stage] — brief summary, then bullet points -->
 
-## 2026-03-07 [CODING] — Update AI_INSTRUCTIONS.md and .gitignore
-- Added step to update CHANGELOG.md before any code management action (step 5a)
-- Added `ai-project-integration-plan/` to .gitignore
-
-## 2026-03-07 [CODING] — Fix bin path in package.json (v1.1.2)
-- Fixed `bin` entry path from `./bin/cli.js` to `bin/cli.js` to comply with npm requirements
-- Ensures `ai-project` CLI command is correctly registered after installation
+## 2026-04-18 [CODING] — Add sub-agents, coding guide, and dev-lessons workflow
+- Added three Claude sub-agents: code-writer, code-reviewer, lessons-collector to template/agents/
+- Added docs/coding-guide.md and docs/sub-agents.md
+- Updated docs/workflows/github.md to use --no-ff merge strategy
+- Updated AI_INSTRUCTIONS.md to reference docs/coding-guide.md as always-available
+- Updated .gitignore for dev-lessons local files
+- CLI: prompt user during init whether to install sub-agents into .claude/agents/
 
 ## 2026-03-07 [CODING] — CLI refactor with init command and custom naming
 - Refactored CLI command structure from `ai-project <project-name>` to `ai-project init <project-location>`
